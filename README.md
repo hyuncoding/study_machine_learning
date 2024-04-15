@@ -319,3 +319,114 @@ GridSearchCV
 -   보통 F1 Score가 0.7 이상일 경우 좋은 모델이라고 간주한다.
 
 <img src="./b_classifier/images/evaluation.png" width="230px">
+
+### 베이즈 추론, 베이즈 정리, 베이즈 추정 (Bayesian Inference)
+
+-   역확률(inverse probability) 문제를 해결하기 위한 방법으로서, 조건부 확률(P(B|A))을 알고 있을 때, 정반대인 조건부 확률(P(A|B))을 구하는 방법이다.
+-   추론 대상의 사전 확률과 추가적인 정보를 기반으로 해당 대상의 "사후 확률"을 추론하는 통계적 방법이다.
+-   어떤 사건이 서로 "배반"하는(독립하는) 원인 둘에 의해 일어난다고 하면, 실제 사건이 일어났을 때 이 사건이 두 원인 중 하나일 확률을 구하는 방식이다.
+-   어떤 상황에서 N개의 원인이 있을 때 실제 사건이 발생하면 N개 중 한 가지 원인일 확률을 구하는 방법이다.
+-   기존 사건들의 확률을 알 수 없을 때에는 전혀 사용할 수 없는 방식이다.
+-   하지만, 그 간 데이터가 쌓이면서 기존 사건들의 확률을 대략적으로 뽑아낼 수 있게 되었다.
+-   이로 인해 사회적 통계나 주식에서 베이즈 정리 활용이 필수로 꼽히고 있다.
+
+> ##### 예시
+>
+> 질병 A의 양성판정 정확도가 80%인 검사기가 있다. 검사를 시행해서 양성이 나왔다면, 이 사람이 80%의 확률로 병에 걸렸다고 이야기할 수 없다. 왜냐하면 검사기가 알려주는 확률과 양성일 경우 질병을 앓고 있을 확률은 조건부 확률의 의미에서 정반대이기 때문이다.
+
+<table style="width:50%; margin-left: 50px">
+    <tr>
+        <th>전제</th>
+        <th>관심 사건</th>
+        <th>확률</th>
+    </tr>
+    <tr>
+        <th>병을 앓고 있다</th>
+        <th>양성이다</th>
+        <th>80%</th>
+    </tr>
+    <tr>
+        <th>양성이다</th>
+        <th>병을 앓고 있다</th>
+        <th>알수 없음</th>
+    </tr>
+</table>
+
+> 이런 식의 확률을 구해야 하는 문제를 역확률 문제라고 하고 이를 베이즈 추론을 활용하여 구할 수 있다.  
+> 단, 검사 대상인 질병의 유병률(사전 확률, 기존 사건들의 확률)을 알고 있어야 한다.  
+> 전세계 인구 중 10%의 사람들이 질병 A를 앓는다고 가정한다.
+
+<div style="width: 60%; display:flex; margin-top: -20px; margin-left:30px">
+    <div>
+        <img src="./b_classifier/images/bayesian_inference01.png" width="300" style="margin-top:20px; margin-left:0">
+    </div>
+    <div style="margin-top: 28px; margin-left: 20px">
+        <img src="./b_classifier/images/bayesian_inference02.png" width="310" style="margin-top:20px; margin-left:0">
+    </div>
+</div>
+
+<div style="width: 60%; display:flex; margin-left:30px">
+    <div>
+        <img src="./b_classifier/images/bayesian_inference03.png" width="800" style="margin-top:20px; margin-left:0">
+    </div>
+    <div style="margin-top: 28px; margin-left: 20px">
+        <img src="./b_classifier/images/bayesian_inference04.png" width="550" style="margin-top:-8px; margin-left:0">
+    </div>
+</div>
+
+> 🚩결과: 약 30.8%
+> <img src="./b_classifier/images/bayesian_inference05.png" width="200" style="margin-top:20px; margin-left:0">
+
+### 나이브 베이즈 분류 (Naive Bayes Classifier)
+
+-   텍스트 분류를 위해 전통적으로 사용되는 분류기로서, 분류에 있어서 준수한 성능을 보인다.
+-   베이즈 정리에 기반한 통계적 분류 기법으로서, 정확성도 높고 대용량 데이터에 대한 속도도 빠르다.
+-   반드시 모든 feature가 서로 독립적이어야 한다. 즉, 서로 영향을 미치지 않는 feature들로 구성되어야 한다.
+-   감정 분석, 스팸 메일 필터링, 텍스트 분류, 추천 시스템 등 여러 서비스에서 활용되는 분류 기법이다.
+-   빠르고 정확하고 간단한 분류 방법이지만, 실제 데이터에서 모든 feature가 독립적인 경우는 드물기 때문에 실생활에 적용하기 어려운 점이 있다.
+
+<img src="./b_classifier/images/naive_bayes_classifier.png" width="400px">
+
+### 서포트 벡터 머신 (SVM, Support Vector Machine)
+
+-   기존의 분류 방법들은 '오류율 최소화'의 목적으로 설계되었다면, SVM은 두 부류 사이에 존재하는 '여백 최대화'의 목적으로 설계되었다.
+-   분류 문제를 해결하는 지도 학습 모델 중 하나이며, 결정 경계라는 데이터 간 경계를 정의함으로써 분류를 할 수 있다.
+-   새로운 데이터가 경계를 기준으로 어떤 방향에 잡히는지를 확인함으로써 해당 데이터의 카테고리를 예측할 수 있다.
+-   데이터가 어느 카테고리에 속할지 판단하기 위해 가장 적절한 경계인 결정 경계를 찾는 선형 모델이다.
+
+<img src="./b_classifier/images/support_vector_machine01.png" width="400px" style="margin-bottom: 60px">
+
+#### 서포트 벡터 (Support Vector)
+
+-   결정 경계를 결정하는 데이터(벡터)들을 서포트 벡터라고 부른다.
+-   서포트 벡터들이 결정 경계(Decision boundary)를 결정한다.
+-   서포트 벡터와 결정 경계 간의 거리를 마진(Margin)이라고 부르고, 마진이 크면 클수록 좋은 결정 경계가 된다.
+-   서포트 벡터들을 통해 결정 경계들을 결정하게 되고, 다른 학습 데이터들은 무시될 수 있기 때문에 SVM의 속도가 빠를 수 있다.
+
+#### 결정 경계 (Decision Boundary)
+
+-   새로운 데이터가 들어오더라도 결정 경계를 중심으로 두 집단이 멀리 떨어져 있어야 두 집단을 잘 구분할 수 있기 때문에 일반화하기 쉬워진다.
+-   예측 변수(독립 변수)의 차원보다 한 차원 낮아지며, N차원 공간에서 한 차원 낮은 N-1차원의 결정 경계가 생긴다.  
+    즉, 2차원 공간에서는 결정 경계이 선으로 결정되고, 고차원에서의 결정 경계는 선이 아닌 평면 이상의 도형이며, 이를 "초평면(Hyperplane)"이라고 부른다.
+
+<img src="./b_classifier/images/support_vector_machine02.png" width="400px" style="margin-bottom: 60px">
+
+#### 하드 마진(Hard margin)
+
+-   매우 엄격하게 집단을 구분하는 방법으로 이상치를 허용해주지 않는 방법이다.
+-   이상치를 허용하지 않기 때문에 과적합이 발생하기 쉽고, 최적의 결정경계를 잘못 구분하거나 못 찾는 경우가 생길 수 있다.
+-   C(cost)는 페널티를 조절할 수 있고, 값이 커질 수록 결정 경계가 데이터에 더 정확하게 맞춰진다.
+-   비유적으로 보면 C를 낮추면 일을 덜 하게 하는 것이고, C를 높이면 일을 더 해서 더 섬세하게 찾아내는 것이라고 볼 수 있다.
+-   C가 너무 낮으면 underfitting될 가능성이 커지고, C가 너무 높으면 overfitting이 발생할 수 있다.
+
+<img src="./b_classifier/images/hard_margin.png" width="350px" style="margin-bottom: 60px">
+
+#### 소프트 마진(Soft margin)
+
+-   이상치를 허용해서 일부 데이터를 잘못 분류하더라도 나머지 데이터를 더욱 잘 분류해주는 방법이다.
+-   이상치 허용으로 인해 데이터의 패턴을 잘 감지하지 못하는 문제점이 생길 수 있다.
+
+<img src="./b_classifier/images/soft_margin.png" width="550px" style="margin-bottom: 60px">
+
+> 🎈정리  
+> 서포트 벡터 머신 알고리즘을 적용한 SVC 모델의 하이퍼파라미터인 Regularization cost, C에 값을 전달하여 ξ(페널티)를 조절할 수 있다. C가 클 수록 loss function에서 오차항인 ξ<sub>i</sub>의 영향력이 커지게 되기 때문에 마진의 크기가 줄어들고(하드 마진), 반대로 C가 작을 수록 마진의 크기가 늘어난다(소프트 마진). 적절히 조절하면 오히려 성능이 좋아질 수 있다.
