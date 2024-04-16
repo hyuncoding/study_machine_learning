@@ -430,3 +430,145 @@ GridSearchCV
 
 > 🎈정리  
 > 서포트 벡터 머신 알고리즘을 적용한 SVC 모델의 하이퍼파라미터인 Regularization cost, C에 값을 전달하여 ξ(페널티)를 조절할 수 있다. C가 클 수록 loss function에서 오차항인 ξ<sub>i</sub>의 영향력이 커지게 되기 때문에 마진의 크기가 줄어들고(하드 마진), 반대로 C가 작을 수록 마진의 크기가 늘어난다(소프트 마진). 적절히 조절하면 오히려 성능이 좋아질 수 있다.
+
+#### 커널 트릭 (Kernel trick)
+
+-   선형으로 완전히 분류할 수 없는 데이터 분포가 있을 경우 소프트 마진을 통해 어느 정도 오류는 허용하는 형태로 분류할 수는 있다. 하지만, 더 잘 분류하기 위해서는 차원을 높여야 한다. 이를 고차원 매핑이라고 하고 이때 커널 트릭을 사용한다.
+-   저차원으로 해결하기 어려운 문제들을 고차원으로 변환시켜서 문제를 해결할 때 사용한다.
+
+<img src="./b_classifier/images/kernel_trick.png" width="600px" style="margin-bottom: 60px">
+
+-   비선형 데이터일 때 RBF 커널을 사용하고, 선형 데이터일 때 linear 커널을 사용하는 것이 효과적이다.
+-   RBF 커널을 사용하게 되면, gamma 하이퍼 파라미터를 조정할 수 있으며 이는 데이터 포인터들의 영향 범위를 결정한다.
+-   gamma가 클 수록 하나의 벡터의 영향력 거리가 짧아지고, gamma가 작을 수록 거리가 길어진다.
+-   즉, gamma가 클 수록 표준편차가 낮아진다. gamma가 너무 작으면 과소적합의 가능성이 크고, 너무 높으면 과적합의 위험이 있다.
+
+<img src="./b_classifier/images/svm_c_gamma.png" width="700px" style="margin-bottom: 60px">
+
+### Feature Selection
+
+-   결과 예측에 있어서, 불필요한 feature들로 인해 모델 예측 성능을 떨어뜨릴 가능성을 사전 제거할 수 있다.
+-   타겟 데이터와 관련이 없는 feature들을 제거하여, 타겟 데이터를 가장 잘 예측하는 feature들의 조합(상관관계가 높은)을 찾아내는 것이 목적이다.
+
+#### 🎈용어 정리
+
+<table style="margin-left: 0">
+    <tr>
+        <th style="text-align: center">표현</th>
+        <th style="text-align: center">정의</th>
+    </tr>
+    <tr>
+        <td style="text-align: center">Feature Engineering</td>
+        <td style="text-align: center">도메인(기본) 지식을 사용하여 데이터에서 피처를 변형 및 생성</td>
+    </tr>
+    <tr>
+        <td style="text-align: center">Feature Extraction</td>
+        <td style="text-align: center">차원축소 등 새로운 중요 피처를 추출</td>
+    </tr>
+    <tr>
+        <td style="text-align: center">Feature Selection</td>
+        <td style="text-align: center">기존 피처에서 원하는 피처만 선택하는 과정</td>
+    </tr>
+</table>
+
+#### Recursive Feature Elimination (RFE)
+
+-   모델 최초 학습 이후 feature의 중요도를 선정하는 방식이다.
+-   feature의 중요도가 낮은 속성들을 차례로 제거하면서 원하는 feature의 개수가 남을 때까지 반복적으로 학습 및 평가를 수행한다.
+-   경우의 수로 제거해가며 학습을 재수행하기 때문에 시간이 오래 걸린다.
+-   몇 개의 feature를 추출해야 할 지 직접 정의해야 하는 것이 단점이다.
+
+<img src="./b_classifier/images/RFE.png" width="400px">
+
+#### Recursive Feature Elimination Cross Validation (RFECV)
+
+-   RFE의 단점을 보완하기 위해 만들어졌으며, 최고 성능에서의 feature 개수를 알려주고, 해당 feature를 선택해준다.
+-   각 feature마다 Cross Validation을 진행하여 각기 다른 성능을 도출한다.
+-   도출된 성능 수치를 평균 내어 가장 높은 성능을 발휘하는 feature들을 선택한다.
+
+<img src="./b_classifier/images/RFECV.png" width="600px">
+
+#### Permutation Importance
+
+-   Permutation(순열)이란, 서로 다른 n개의 원소에서 r개를 중복 없이 순서에 상관 있게 선택하는, 혹은 나열하는 것이다.
+-   여기서 원소는 feature이며, 각 feature별로 중복 없이 선택하여 feature의 중요도를 검증하는 방식이다.
+-   임의의 feature의 요소 순서를 무작위로 섞은 후 성능 감소에 대한 평균을 구한다.
+-   중요도를 판단하려는 feature의 요소를 noise로 만들어서 전과 후를 비교한 뒤 중요도를 판단한다.
+-   임의의 feature를 noise로 만들었을 때 성능이 떨어진 정도로 feature importance를 판별할 수 있다.
+
+<img src="./b_classifier/images/feature_selection01.png" width="500px">
+<img src="./b_classifier/images/feature_selection02.png" width="500px">
+
+### K-최근접 이웃 알고리즘 (K-Nearest Neighbor, KNN)
+
+-   임의의 데이터가 주어지면 그 주변(이웃)의 데이터를 살펴본 뒤 더 많은 데이터가 포함되어 있는 범주로 분류하는 방식이다.
+-   가장 간단한 머신러닝 알고리즘으로서, 직관적이고 나름 성능도 준수하다.
+-   K를 어떻게 정하는지에 따라서 결과값이 바뀔 수 있다. K는 임의의 데이터가 주어졌을 때 가까운 이웃들의 개수이고 기본값은 5이다.
+-   K는 가장 가까운 5개의 이웃 데이터를 기반으로 분류하며, 일반적으로 홀수를 사용한다. 짝수의 경우 동점이 되어 하나의 결과를 도출할 수 없기 때문이다.
+
+<img src="./b_classifier/images/knn01.png" width="400px"><img src="./b_classifier/images/knn02.png" width="400px" style="margin-left: 20px;">
+
+-   KNN은 fit을 통해 훈련시키면 학습하지 않고 저장만 해놓는다. 따라서 이러한 모델을 Lazy Model이라고 부른다.
+-   새로운 데이터가 주어지면 그제서야 이웃 데이터를 보고 분류해나간다. 따라서 사전 모델링이 필요없는 real-time 예측이 이루어진다.
+
+<img src="./b_classifier/images/knn03.jpg" width="350px" style="margin-left: 20px;">
+
+-   데이터와 데이터 사이의 거리를 구해야 더 가까운 클래스로 분류할 수 있으며,  
+    이는 유클리드 거리(Euclidean Distance) 방식과 맨해튼 거리(Manhattan Distance) 방식으로 나뉜다.
+
+### 앙상블 학습 (Ensemble Learning)
+
+-   어떤 데이터의 값을 예측한다고 할 때, 하나의 모델만 가지고 결과를 도출할 수도 있지만,  
+    여러 개의 모델을 조화롭게 학습시켜 그 모델들의 예측 결과들을 이용한다면 더 정확한 예측값을 구할 수 있다.
+-   여러 개의 분류기를 생성하고 그 예측을 결합하여 1개의 분류기를 사용할 때보다 더 정확하고 신뢰성 높은 예측을 도출하는 기법이다.
+-   강력한 하나의 모델을 사용하는 것보다 약한 모델을 여러 개 조합하여 더 정확한 예측에 도움을 주는 방식이다.
+-   앙상블 학습의 주요 방법은 배깅(Bagging)과 부스팅(Boosting)이다.
+
+#### 보팅(Voting)
+
+-   "하나의 데이터 세트"에 대해 서로 다른 알고리즘을 가진 분류기를 결합하는 방식이다.
+-   서로 다른 분류기들에 "동일한 데이터 세트"를 병렬로 학습해서 예측값을 도출하고, 이를 합산하여 최종 예측값을 산출해내는 방식을 말한다.
+
+> 1. 하드 보팅 (Hard Voting)
+>
+> -   각 분류기가 만든 예측값을 다수결로 투표해서 가장 많은 표를 얻은 예측값을 최종 예측값으로 결정하는 보팅 방식을 말한다.
+>
+> <img src="./b_classifier/images/hard_voting.png" width="420px">
+
+> 2. 소프트 보팅 (Soft Voting)
+>
+> -   각 분류기가 예측한 타겟별 확률을 평균내어 가장 높은 확률의 타겟을 최종 예측값으로 도출한다.
+>
+> <img src="./b_classifier/images/soft_voting.png" width="440px">
+
+**VotingClassifier(n_estimators, voting)**
+
+-   n_estimators: 추가할 모델 객체를 list형태로 전달한다. 각 모델은 튜플 형태인 ('key', model)로 작성한다.
+-   voting: 'soft', 'hard' 둘 중의 하나를 선택한다(default: 'hard').
+
+#### 배깅(Bagging, Bootstrap Aggregation)
+
+-   하나의 데이터 세트에서 "여러 번 중복을 허용하면서 학습 데이터 세트를 랜덤하게 뽑은 뒤(Bootstrap)" 하나의 예측기 여러 개를 병렬로 학습시켜서 결과물을 집계(Aggregation)하는 방법이다.
+-   Voting 방식과 달리 같은 알고리즘의 분류기를 사용하고 훈련 세트를 무작위로 구성하여 각기 다르게(독립적으로, 병렬로) 학습시킨다.
+-   학습 데이터가 충분하지 않더라도 충분한 학습효과를 주어 과적합 등의 문제를 해결하는 데 도움을 준다.
+-   배깅 방식을 사용한 대표적인 알고리즘이 바로 랜덤 포레스트(Random Forest) 알고리즘이다.
+
+<img src="./b_classifier/images/voting_bagging.png" width="600px" style="margin-bottom: 40px">
+
+-   랜덤 포레스트(Random Forest)
+    **RandomForestClassifier(n_estimators, min_samples_split, min_samples_leaf, n_jobs)**
+
+-   n_estimators: 생성할 tree(트리 구조의 모델)의 개수를 작성한다(default: 50).
+
+#### 부스팅(Boosting)
+
+-   이전 분류기의 학습 결과를 토대로 다음 분류기의 학습 데이터의 샘플 가중치를 조정해서 "순차적으로" 학습을 진행하는 방법이다.
+-   이전 분류기를 계속 개선해나가는 방향으로 학습이 진행되고, 오답에 대한 높은 가중치를 부여하므로 정확도가 높게 나타난다.
+-   높은 가중치를 부여하기 때문에 이상치(Outlier)에 취약할 수 있다.
+
+<img src="./b_classifier/images/boosting01.png" width="600px" style="margin-top: 20px">
+
+> 1. Adaboost(Adaptive boosting)
+> 2. GBM(Gradient Boost Machine)
+> 3. XGBoost(eXtra Gradient Boost)
+> 4. LightGBM(Light Gradient Boosting Machine)
