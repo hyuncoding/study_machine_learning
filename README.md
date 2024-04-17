@@ -569,6 +569,113 @@ GridSearchCV
 <img src="./b_classifier/images/boosting01.png" width="600px" style="margin-top: 20px">
 
 > 1. Adaboost(Adaptive boosting)
+>
+> -   가장 기본적인 부스팅 기법이며, 결정 트리와 비슷한 알고리즘을 사용하지만 뻗어나가지(tree처럼) 않고 하나의 조건식만 사용(stump, 잘린 나무)하여 결정한다.
+> -   여러 개의 stump로 구성되어 있으며, 이를 Forest of stumps 라고 한다.
+> -   stump는 조건식 한 개와 두 갈래의 참, 거짓 리프 노드가 있는 형태이다.
+> -   tree와 다르게, stump는 단 하나의 질문으로 데이터를 분류해야 하기 때문에 약한 학습기(weak learner)이다.
+>     <img src="./b_classifier/images/boosting02.png" width="400px">
+> -   결과에 미치는 영향이 큰 stump를 Amount of Say가 높다(가중치가 높다)고 한다.
+> -   각 stump의 error는 다음 stump의 결과에 영향을 미치고 줄줄이 마지막 stump까지 영향을 미친다.
+> -   모든 stump의 Amount of Say를 수치로 구한 뒤 합한 값을 Total Amount of Say라고 하며, 이를 통해 최종 분류가 이루어진다.
+> -   하나의 stump는 약한 학습기이지만 여러 stump를 모으면 강한 학습기가 된다.
+>
+> <img src="./b_classifier/images/amount_of_say.png" width="300px">
+>
+> -   Total Error가 0이면 항상 올바른 분류를 한다는 뜻이고, 1이면 항상 반대로 분류를 한다는 뜻이다.
+> -   만약 Total Error가 0.5라면 Amount of Say는 0이고, 이는 확률이 반반이기 때문에 분류기로서 분류결과를 랜덤으로 판단하는 것과 같다.
+
 > 2. GBM(Gradient Boost Machine)
+>
+> -   Adaboost와 유사하지만, 에러를 최소화하기 위해 가중치를 업데이트할 때 경사 하강법(Gradient Descent)을 이용한다.
+> -   GBM은 과적합에도 강하고 뛰어난 성능을 보이지만, 병렬 처리가 되지 않아서 수행 시간이 오래 걸린다는 단점이 있다.
+> -   경사 하강법이란, 오류를 최소화하기 위해 Loss function의 최솟값까지 점차 하강하면서 찾아나가는 기법이다.
+> -   모델 A를 통해 y를 예측하고 남은 잔차(residual, 에러의 비율)를 다시 B라는 모델을 통해 예측하고 A + B모델을 통해 y를 예측하는 방식이다.
+> -   잔차를 계속 줄여나가면 훈련 데이터 세트를 잘 예측하는 모델을 만들 수 있게 된다.
+> -   잔차를 계속 줄이다보면 복잡도가 증가하여 과적합이 일어날 수도 있다는 단점이 있다.
+>
+> <img src="./b_classifier/images/gradient_boost.png" width="700px">
+
 > 3. XGBoost(eXtra Gradient Boost)
+>
+> -   트리 기반의 앙상블 학습에서 가장 각광받고 있는 알고리즘 중 하나이며, 분류에 있어서 일반적으로 다른 머신러닝보다 뛰어난 예측 성능을 나타낸다.
+> -   GBM에 기반하고 있지만 병렬 CPU 환경에서 병렬 학습이 가능하기 때문에 기존 GBM보다 빠르게 학습을 완료할 수 있다.
+> -   하이퍼 파라미터를 조정하여 분할 깊이를 변경할 수 있지만, tree pruning(가지치기)으로 더 이상 긍정 이득이 없는 분할을 가지치기하여 분할 수를 줄이는 추가적인 장점을 가지고 있다.
+>
+> <img src="./b_classifier/images/xgboost.png" width="900px">
+>
+> -   조기 중단 기능(Early Stopping)은 특정 반복 횟수만큼 더 이상 loss function이 감소하지 않으면 수행을 종료할 수 있다.
+> -   학습 시간을 단축시킬 수 있으며, 최적화 튜닝 시 적절하게 사용 가능하다.
+> -   하지만 반복 횟수를 너무 낮게 설정할 경우, 최적화 전에 학습이 종료될 수 있기 때문에 조심해야 한다.
+>
+> <img src="./b_classifier/images/early_stopping.png" width="400px">
+
 > 4. LightGBM(Light Gradient Boosting Machine)
+>
+> -   XGBoost의 향상된 버전으로서 결정트리 알고리즘을 기반으로 순위 지정, 분류 및 기타 여러 기계 학습 작업에 사용할 수 있다.
+> -   기존 부스팅 방식과 마찬가지로 각각의 새로운 분류기가 이전 트리의 잔차를 조정해서 모델이 향상되는 방식으로 결합되고, 마지막으로 추가된 트리는 각 단계의 결과를 집계하여 강력한 분류기가 될 수 있다.
+> -   XGBoost와 달리 GOSS 알고리즘을 사용해서 수직으로 트리를 성장시킨다.
+> -   즉, 다른 알고리즘은 레벨(depth) 단위로 성장시키지만, LightGBM은 리프(leaf) 단위로 성장시킨다.
+> -   인코딩을 따로 할 필요 없이 카테고리형 feature를 최적으로 변환하고 이에 따른 노드 분할을 수행한다.  
+>     astype('category')로 변환할 수 있으며, 이는 다른 다양한 인코딩 방식보다 월등히 우수한 성능을 지닌다.
+> -   GOSS 논문  
+>     https://proceedings.neurips.cc/paper_files/paper/2017/file/6449f44a102fde848669bdd9eb6b76fa-Paper.pdf
+>
+> <img src="./b_classifier/images/lightGBM01.png" width="600px">
+>
+> <div style="display: flex">
+>    <div>
+>        <img src="./b_classifier/images/lightGBM02.png" width="400px">
+>    </div>
+>    <div>
+>        <img src="./b_classifier/images/goss.png" width="300px">
+>    </div>
+>  </div>
+
+---
+
+#### 부스팅(Boosting) - AdaBoostClassifier
+
+**AdaBoostClassifier(base_estimators, n_estimators, learning_rate)**
+
+-   base_estimators: 학습에 사용하는 알고리즘을 선택한다(default: DecisionTreeClassifier(max_depth=1)).
+-   n_estimators: 생성할 약한 학습기의 개수를 지정한다(default: 50).
+-   learning_rate: 학습을 진행할 때마다 적용하는 학습률(0~1 사이의 값), 약한 학습기가 순차적으로 오류값을 보정해나갈 때 적용하는 계수이며, 낮은 만큼 최소 손실값을 찾아 예측성능이 높아질 수 있지만, 그만큼 많은 수의 트리가 필요하고 시간이 많이 소요된다(default: 1).
+
+🎈학습률  
+책 100p를 10명의 학생이 공부한다고 했을 때 10p씩 공부한다.  
+이때, 1명의 학습률을 0.1로 낮추면, 10p를 공부하는 데 10명이 필요하다.  
+위 예시를 AdaBoost에 적용하면, 학생 1명이 stump 1개이고 페이지 수가 학습량이다.  
+학습률을 낮출 수록 더 자세히 즉, 손실값을 꼼꼼히 잘 볼 수 있지만 그만큼 많은 학생이 필요하고 시간도 더 걸린다.
+
+---
+
+#### 부스팅(Boosting) - GBM(Gradient Boosting Machine)
+
+**GradientBoostingClassifier(n_estimators, loss, learning_rate, subsample)**
+
+-   n_estimators: 약한 학습기의 개수이며, 개수가 많을 수록 일정 수준까지는 좋아지지만 많을 수록 시간도 오래 걸리고 과적합의 위험이 있다.
+-   loss: 경사 하강법에서 사용할 loss function을 지정한다(default: 'log_loss'). 만약 지수적 감소를 사용하고자 한다면, 'exponential'을 지정한다.
+
+<img src="./b_classifier/images/classifier_loss_function01.png">
+<img src="./b_classifier/images/classifier_loss_function02.png">
+
+-   learning_rate: 학습을 진행할 때마다 적용하는 학습률(0~1사이의 값), 약한 학습기가 순차적으로 오류값을 보정해나갈 때 적용하는 계수이며, 낮은 만큼 최소 손실값을 찾아 예측성능이 높아질 수 있지만, 그만큼 많은 수의 트리가 필요하고 시간이 많이 소요된다(default: 1).
+-   subsample: 학습에 사용하는 데이터의 샘플링 비율이다(default: 1(100%)). 과적합 방지 시 1보다 작은 값으로 설정한다.
+
+---
+
+#### 부스팅(Boosting) - XGBoost(eXtra Gradient Boost)
+
+**XGBClassifier(n_estimators, learning_rate, subsample, eval_set, early_stopping_rounds)**
+
+-   eval_set: 예측 오류값을 줄일 수 있도록 반복하면서 학습이 진행되는데, 이때 학습은 학습 데이터로 하고 예측 오류값 평가는 eval_set으로 지정된 검증 세트로 평가한다.
+-   early_stopping_rounds: 지정한 횟수 동안 오류가 개선되지 않으면 더 이상 학습이 진행되지 않는다.
+
+---
+
+#### 부스팅(Boosting) - LightGBM(Light Gradient Boosting Machine)
+
+**LGBMClassifier(n_estimators, learning_rate, subsample, early_stopping_rounds, eval_set)**
+
+-   n_estimators: default: 100
