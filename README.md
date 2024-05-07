@@ -679,3 +679,228 @@ GridSearchCV
 **LGBMClassifier(n_estimators, learning_rate, subsample, early_stopping_rounds, eval_set)**
 
 -   n_estimators: default: 100
+
+---
+
+### 데이터 전처리
+
+#### StandardScaler()
+
+-   데이터의 평균이 0, 분산이 1이 되도록 표준 정규분포를 따르게 하는 스케일링
+-   ±1.96을 벗어나면 이상치로 판단한다.
+-   <code>from sklearn.preprocessing import StandardScaler</code>
+
+#### MinMaxScaler()
+
+-   데이터가 0~1 사이에 위치하도록 최솟값은 0, 최댓값은 1로 변환한다.
+-   서로 다른 단위의 feature끼리 비교가 가능해진다.
+-   <code>from sklearn.preprocessing import MinMaxScaler</code>
+
+#### MaxAbsScaler()
+
+-   모든 값을 -1~1 사이에 위치하도록, 절대값의 최솟값은 0, 최댓값은 1이 되도록 변환한다.
+-   양의 방향에 대한 단위뿐 아니라 음의 방향에 대한 단위까지 스케일링하고자 할 때 사용한다.
+-   <code>from sklearn.preprocessing import MaxAbsScaler</code>
+
+#### 로그변환 (Log transformation)
+
+-   왜도와 첨도를 가진 변수를 정규분포에 가깝게 만들어준다. 큰 수치를 같은 비율의 작은 수치로 변환한다.
+-   <code>np.log1p(df\['col'\])</code>
+-   원래 값으로 전환하고자 할 때 지수를 취해준다.
+-   <code>np.expm1(df\['col'\])</code>
+
+#### 언더 샘플링 (Under sampling)
+
+-   불균형한 데이터 세트에서 높은 비율을 차지하던 클래스의 데이터 수를 줄임으로써 데이터 불균형을 해소한다.
+-   학습에 사용되는 전체 데이터 수를 급격하게 감소시켜 오히려 성능이 떨어질 수 있다.
+
+<img src="./b_classifier/images/under_sampling.png" width="400px" style="margin-left: 20px">
+
+#### 오버 샘플링 (Over sampling)
+
+-   불균형한 데이터 세트에서 낮은 비율을 차지하던 클래스의 데이터 수를 늘림으로써 데이터 불균형을 해소한다.
+-   오버 샘플링의 대표적인 방법에는 SMOTE(Synthetic Minority Over-sampling Technique)가 있다.
+
+<img src="./b_classifier/images/over_sampling.png" width="400px" style="margin-left: 20px">
+
+#### SMOTE (Synthetic Minority Over-sampling Technique)
+
+-   반드시 학습 데이터 세트만 오버 샘플링 해야 한다.
+-   검증 혹은 테스트 데이터 세트를 오버 샘플링하는 경우 원본 데이터가 아닌 데이터에서 검증되기 때문에 올바른 검증이 되지 않는다.
+-   낮은 비율 클래스 데이터들의 최근접 이웃을 이용하여 새로운 데이터를 생성한다.
+-   동일한 데이터를 복제하는 것은 의미가 없기 때문에 일정한 거리만큼 떨어진 위치에 데이터를 생성하기 위함이다.
+-   오버 샘플링을 하게 되면 양성으로 예측하는 비율이 높아지기 때문에 정밀도가 감소하고 재현율이 증가한다.
+-   오버 샘플링을 정확히 수행하기 위해서는 category 타입을 사용하는 것보다 직접 인코딩해주는 것이 좋다.
+
+<img src="./b_classifier/images/smote.png" width="650px">
+
+---
+
+### 회귀 (Regression)
+
+-   데이터가 평균과 같은 일정한 값으로 돌아가려는 경향을 이용한 통계학 기법이다.
+-   여러 개의 독립 변수와 한 개의 종속 변수 간의 상관관계를 모델링하는 기법을 통칭한다.
+-   feature와 target 데이터 기반으로 학습하여 최적의 회귀 계수(W)를 찾는 것이 회귀의 목적이다.
+-   아래는 복습 시간에 따른 다음 수업의 이해도를 수치로 표현한 표이다.
+
+---
+
+<div style="display: flex; justify-content: center; width: 900px;">
+    <table style="margin-left: 20px; text-align: center; border: 1px solid #eee; width: 500px;">
+        <tr>
+            <th>복습 시간 (x)</th>
+            <th>다음 수업의 이해도 (y)</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>2.2</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>5.8</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>7.6</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>9.3</td>
+        </tr>
+    </table>  
+    <div style="margin-top: 60px;">
+        <img src="./c_regression/images/regression_train.png">
+    </div>
+</div>
+
+---
+
+-   5시간 복습을 했을 때, 다음 수업의 이해도를 예측하고자 한다면,  
+    학습 데이터(x)를 가장 잘 표현할 수 있는 직선을 찾아야 하고, 이 식을 가설(Hypothesis)라고 한다.
+-   아래는 위 데이터를 표현하고자 하는 직선의 방정식과 가설이다.
+
+<img src="./c_regression/images/regression_h.png" style="margin-left: 20px;">
+
+-   수학에서 W는 기울기, b는 절편이지만, 가설에서 W(Weight) 가중치, b(bias)를 편향이라 한다. 편향은 다양한 요인을 대표하는 값이다.
+
+### 최적화(Optimizer) - 경사 하강법(Gradient Descent)
+
+<sub>아래의 설명부터는 이해를 위해 W를 가중치가 아닌 기울기로, bias를 절편, 0으로 가정한다.</sub>
+
+-   손실 함수의 값을 최소로 하는 기울기와 절편을 찾기 위해서 최적화(Optimization) 알고리즘이 사용된다.
+-   기울기(W)와 오차의 관계를 그래프로 나타내기 위해서는 패턴을 알아야 한다. 그 패턴은 다음과 같다.
+-   기울기(W)가 지나치게 크면 오차도 커지고, 지나치게 작아도 오차가 커지기 때문에 적절한 기울기를 찾아야 한다.
+
+-   따라서 기울기와 오차는 기울기가 커질수록 Loss 값도 커지고,  
+    지나치게 작아져도 Loss 값은 계속 커지기 때문에 아래와 같은 관계 그래프가 나온다.
+
+<img src="./c_regression/images/gradient_descent01.png" style="margin-left: 20px">
+
+-   위 그래프에서 Loss 값이 가장 최소가 되는 W를 찾아야 한다.
+-   임의의 초기값 W를 정한 뒤, 점차 W를 수정해야 하는데, 이를 경사 하강법(Gradient Descent)으로 진행할 수 있다.
+
+<img src="./c_regression/images/gradient_descent02.png" style="margin-left: 20px">
+
+-   W가 아래로 내려갈수록 접선의 기울기가 점점 작아지고 Loss 값이 최솟값이 되는 부분은 결국 접선의 기울기가 0이 된다.
+-   이 말은 즉 Loss 값이 최소가 되는 지점은 미분값이 0이 되는 지점이라는 뜻이다.
+-   기존 W에 경사 하강법 알고리즘에 대한 값을 빼주면서 점점 업데이트되며, 이는 아래 수식으로 표현이 가능하다.
+
+<img src="./c_regression/images/gradient_descent03.png" style="margin-left: 20px">
+
+-   빼줄 값에 η(에타)를 곱해줄 수 있는데, 이 η(에타)가 바로 학습률이다.
+-   학습률로 하강 속도를 조절할 수 있으며, 너무 크게 주면 발산하고 너무 작게 주면 최솟값까지 도달하지 못할 수 있다.
+
+<img src="./c_regression/images/learning_rate.png" style="margin-left: -70px">
+
+### Multivariate Linear Regression (다변량 선형 회귀)
+
+-   하나의 종속변수와 여러 독립변수 사이의 관계를 분석하는 기법이다.
+
+### Mini batch
+
+-   기존에 사용했던 전체 데이터를 대상으로 한 번에 경사 하강법을 수행하는 방법은 '배치 경사 하강법'이라 한다.
+-   배치 경사 하강법은 전체 데이터를 사용하므로 W가 최적값에 수렴하는 과정이 안정적이다.
+-   하지만 시간이 너무 오래 걸리기 때문에, 나누어서 하는 방법이 필요하고 이를 '미니 배치 경사 하강법'이라 한다.
+-   미니 배치 경사 하강법은 미니 배치 단위로 경사 하강법을 수행하는 방법이다.
+-   전체가 아닌 일부 데이터를 사용하기 때문에 W가 최적값에 수렴하기 위해 많이 헤맬 수 있다.
+-   하지만 상대적으로 훈련 속도가 빨라서 시간적 효율이 높다.
+
+<img src="./c_regression/images/mini_batch.png" width="500px">
+
+### OLS (Ordinary Least Square)
+
+-   최소제곱법, 또는 최소자승법, 최소제곱근사법, 최소자승근사법을 의미하는 기술로서, 가장 근접한 해를 구하는 방식이다.
+-   선형 회귀 모델을 평가하는 데 유용한 방법이며, 모델 전체와 모델의 각 feature에 대한 통계적 성능 지표를 사용하여 수행된다.
+-   다양한 유형의 통계 모델을 추정하고 통계 테스트를 수행하는 클래스 여러 개와 기능을 제공한다.
+-   관측된 데이터에 선형 방정식을 적용해서 생성되며, 가장 일반적인 방법이다.
+-   P > |t| (p-value): 해당 독립 변수가 0.05보다 작으면 종속 변수에 영향을 미치는 것이 유의미하다라는 것을 뜻한다.
+-   Durbin-Watson: 보통 1.5에서 2.5사이라면, 독립으로 판단하고 회귀 모형이 적합하다는 것을 의미한다.
+-   R<sup>2</sup>값을 유지 또는 개선하는 방향으로만 수행해야 한다.
+
+### VIF (Variance Inflation Factor)
+
+-   분산 팽창 요인 수치가 5 또는 10 이상일 경우 다중 공선성의 문제가 있다는 뜻이다.
+-   전체적으로 5를 넘어가면 10 이상을 판단한다.
+-   다중 공선성(Multicollinearity)이란 회귀 분석에서 독립변수들 간에 강한 상관관계가 나타나는 문제를 뜻한다.
+
+<img src="./c_regression/images/multicollinearity.png">
+
+### Decision Tree Regression (회귀 트리)
+
+-   결정 트리와 결정 트리 기반의 앙상블 알고리즘은 분류 뿐 아니라 회귀분석도 가능하다.
+-   분류와 유사하게 분할하며, 최종 분할 후 각 분할 영역에서 실제 데이터까지의 거리들의 평균 값으로 학습 및 예측을 수행한다.
+
+<img src="./c_regression/images/decision_tree_regression01.png" width="600px" style="margin-left: 20px">
+
+-   회귀 트리 역시 복잡한 트리 구조를 가질 경우 과적합의 위험이 있고, 트리 크기와 노드의 개수 제한 등으로 개선해야 한다.
+
+<img src="./c_regression/images/decision_tree_regression02.png" width="600px" style="margin-left: 20px">
+
+-   독립 변수들과 종속 변수 사이의 관계가 상당히 비선형적일 경우 사용하는 것이 좋다.
+
+<img src="./c_regression/images/decision_tree_regression03.png" width="800px" style="margin-left: 20px">
+
+### Dimension Reduction (차원 축소)
+
+-   우리가 다루는 데이터들은 보통 3차원 공간에서는 표현하기 힘든 고차원의 데이터인 경우가 많다.
+-   차원이 커질 수록 데이터 간 거리가 크게 늘어나며, 데이터가 희소화된다.
+-   고차원을 이루는 feature 중 상대적으로 중요도가 떨어지는 feature가 존재할 수 있기 때문에  
+    계산 비용이 많이 들고 분석에 필요한 시각화가 어렵다.
+-   머신러닝에서는 고차원 데이터를 다루는 경우가 많으며, 희소 데이터를 학습 시 예측 성능이 좋지 않다.
+-   차원 축소를 통해 Sparse Data를 Dense하게 만들 필요가 있다.
+-   feature가 많을 경우 독립변수 간 상관관계가 높아질 가능성이 높고, 이로 인해 다중 공선성문제가 발생할 수 있다.
+-   차원 축소로 인해 표현력이 일부 손실되지만, 손실을 감수하더라도 계산 효율을 얻기 위해 사용한다.
+
+---
+
+#### PCA (Principal Component Analysis), 주성분 분석
+
+-   고차원의 데이터를 저차원으로 압축하는 대표적인 차원 축소방법이다.
+-   데이터의 특성을 눈으로 쉽게 파악할 수 있도록 하며, 연산 속도에 큰 이점을 얻을 수 있다.
+-   고차원 데이터를 저차원 데이터로 압축하기 위해서는 먼저, 데이터를 가장 잘 표현하는 축을 설정해야 한다.
+-   2차원 공간에서 1차원 공간으로 차원 축소를 진행하면, 1차원 공간상에서 데이터 분포가 가장 넓게 퍼지게 만드는 고유 벡터를 찾아야 한다.
+-   고유 벡터를 찾았다면 feature 데이터들을 고유 벡터 축에 투영시킴으로써 주성분을 찾아낼 수 있게 된다.
+
+<div style="display: flex">
+    <div>
+        <img src="./d_dimension_reduction/images/pca01.gif" style="margin-left: -200px">
+    </div>
+    <div>
+        <img src="./d_dimension_reduction/images/pca02.gif" width="700" style="margin-top:50px; margin-left: -350px">
+    </div>
+</div>
+
+#### LDA (Linear Discriminant Analysis), 선형 판별 분석
+
+-   PCA와 유사하지만, 분류에서 사용하기 쉽도록 개별 클래스를 분별할 수 있는 기준을 최대한 유지하면서 차원을 축소한다.
+-   PCA는 가장 큰 분산을 가지는 축을 찾았지만, LDA는 입력 데이터의 클래스를 최대한 분리할 수 있는 축을 찾는다.
+-   클래스를 최대한 분리하기 위해서 클래스 간 분산을 최대화하고 클래스 내부 분산을 최소화하는 방식으로 차원을 축소한다.
+
+<div style="display: flex">
+    <div>
+        <img src="./d_dimension_reduction/images/lda01.png" width="650" style="margin:20px; margin-left: -20px">
+    </div>
+    <div>
+        <img src="./d_dimension_reduction/images/lda02.png" width="650" style="margin:20px; margin-left: 0">
+    </div>
+</div>
