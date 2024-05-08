@@ -904,3 +904,119 @@ GridSearchCV
         <img src="./d_dimension_reduction/images/lda02.png" width="650" style="margin:20px; margin-left: 0">
     </div>
 </div>
+
+### Regularized Linear Regression (정규화된 선형 회귀)
+
+-   다중 회귀 모델은 복잡도가 높아서 과대적합(overfitting)되는 경향이 있다. 이를 해결하기 위해서는 규제(penalty)를 주어 복잡도를 감소시켜야 한다.
+
+#### 라쏘(LASSO, Least Absolute Shrinkage and Selection Operator)
+
+-   L1 규제를 통한 정규화를 사용하는 방식이다.
+-   규제항이 0에 수렴할 때 L1 정규화에서는 가중치(W)가 0이 될 수 있다.
+-   L1 NORM의 경우에 절대값에 대한 식이므로 미분이 불가능한 점이 있지만, 특정 방식을 통해 미분하면 가중치가 0이 된다. 따라서 경사하강법을 통해 학습하는 모델에는 적합하지 않다.
+-   중요하지 않은 feature들은 모델에서 제외하여 모델을 단순하게 만들고, 가장 영향력이 큰 특성이 무엇인지 알 수 있기 때문에 모델의 해석력이 좋아진다.
+
+<div style="display: flex; margin-top:20px">
+    <div>
+        <img src="./c_regression/images/regularized01.png" width="350" style="margin-top: 10px; margin-left: 30px">
+    </div>
+    <div>
+        <img src="./c_regression/images/regularized02.png" style="margin-left: 50px">
+    </div>
+</div>
+
+#### 릿지(Ridge)
+
+-   L2 규제를 통한 정규화를 사용하는 방식이다.
+-   규제항이 0에 수렴할 때 L2 정규화의 경우 가중치는 0이 될 수 없다.
+-   L2 NORM의 경우 미분했을 때 가중치가 남아있기 때문에, 경사하강법을 통해 학습하는 모델에 적합하다.
+-   값이 0이 되어 제외되는 feature가 없지만, 골고루 0에 가까운 값으로 작아지기 때문에 장기적으로 더 좋은 모델이 된다.
+
+<div style="display: flex; margin-top:20px">
+    <div>
+        <img src="./c_regression/images/regularized03.png" width="350" style="margin-top: 10px; margin-left: 30px">
+    </div>
+    <div>
+        <img src="./c_regression/images/regularized04.png" style="margin-left: 50px">
+    </div>
+</div>
+
+**λ (Regulation parameter)**
+
+-   λ이 커지면 loss function을 최소화하는 과정에서 NORM이 작아지므로 규제가 강해졌다고 표현한다.
+-   λ이 작아지면 loss function을 최소화하는 과정에서 NORM이 커지므로 규제가 약해졌다고 표현한다.
+
+### 로지스틱 회귀 (Logistic Regression)
+
+-   독립 변수의 선형 결합을 이용하여 이진 분류 사건의 발생 가능성을 예측하는데 사용되는 통계기법이다.
+
+<div style="display: flex; justify-content: space-between; width: 1000px;">
+    <table style="margin-left: 20px; text-align: center; border: 1px solid #eee; width: 500px;">
+        <tr>
+            <th>노는 시간 - 공부 시간 (x)</th>
+            <th>합격 여부 (y)</th>
+        </tr>
+        <tr>
+            <td>-4</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <td>-2</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>1</td>
+        </tr>
+    </table>  
+    <div style="width: 400px">
+        <img src="./b_classifier/images/logistic_regression_train.png">
+        <br><br><br>
+        <img src="./b_classifier/images/linear_combination.png">
+    </div>
+</div>
+
+<img src="./b_classifier/images/logistic_regression_example_graph.png">
+
+-   위와 같은 데이터에 직선을 사용하게 되면, 오차가 너무 크게 생긴다.
+-   기존의 가설을 S모양 그래프로 만들 수 있는 함수로 감싸주어야 하고, 이 f함수는 시그모이드 함수이다.
+-   따라서 로지스틱 회귀에서는 아래와 같은 가설을 사용하게 된다.
+
+<img src="./b_classifier/images/logistic_h.png" style="margin-left: 25px;">  
+<img src="./b_classifier/images/logistic_sigmoid.png" style="margin-left: 25px;">
+
+<img src="./b_classifier/images/sigmoid_example_graph.png">
+
+-   위에서 확인할 수 있듯이, W는 기울기가 아니라 경사도를 결정하게 된다. 즉, W가 커지면 경사가 높아지고 W가 작아지면 경사가 낮아진다.
+-   b는 커질 수록 왼쪽으로 이동하고, 작아질 수록 오른쪽으로 이동한다.
+-   MSE(평균 제곱 오차) 수식을 통해 경사도와 오차에 대한 그래프를 그리고 미분을 진행하면 다음과 같다.
+
+<img src='./b_classifier/images/regression_loss_function01.png' style='margin-left: 20px'>
+<img src='./b_classifier/images/sigmoid_gradient_descent01.png' style='margin-left: 20px'>
+
+-   경사 하강법을 통해 오차가 최소로 되는 곳에 도착해도 해당 부분이 최소가 아닐 수 있기 때문에(로컬 미니멈),  
+    실제 최소가 되는곳(글로벌 미니멈)까지 가야한다. 이는 많은 기술을 요하므로 다른 loss function을 고려해봐야 한다.
+
+---
+
+-   아래 그래프는 y = 0.5에 대칭하는 log 함수이다.
+
+<img src="./b_classifier/images/sigmoid_gradient_descent02.png" style="margin-left: 20px">
+
+-   실제값이 0일 때 예측값이 1에 가까워지면 loss가 점점 커지고, 실제값이 1일 때 예측값이 0에 수렴해도 loss가 점점 커진다.
+-   위 로그 함수를 수식으로 나타내면 다음과 같다.
+
+<img src="./b_classifier/images/sigmoid_gradient_descent03.png" style="margin-left: 20px">
+
+-   위 식을 통해 W에 대한 loss function을 구하는 식은 아래와 같다.
+
+<img src="./b_classifier/images/sigmoid_gradient_descent04.png" style="margin-left: 20px">
+
+-   실제값 y와 예측값 H(x)의 차이가 커질 수록 loss값이 커지고 차이가 작아지면 loss값이 작아진다.  
+    위의 loss function에 대해서 경사 하강법을 수행하며 최적의 경사도(W)를 찾아간다.
+
+<img src="./b_classifier/images/sigmoid_gradient_descent05.png" style="margin-left: 20px">
